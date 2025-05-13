@@ -118,7 +118,7 @@ io.on("connection", (socket) => {
 
     socket.on("ready", (readyMessage) => {
         const { peerDto, type } = readyMessage;
-        const { peerId, publicKey, x, y, sex, searching, age } = peerDto;
+        const { peerId, publicKey, x, y, sex, searching, age, latitude, longitude } = peerDto;
         // Make sure that the hostname is unique, if the hostname is already in connections, send an error and disconnect
         if (peerId in connections) {
             socket.emit("uniquenessError", {
@@ -130,7 +130,7 @@ io.on("connection", (socket) => {
             // Let new peer know about all exisiting peers
             socket.send({ from: "all", target: peerId, payload: { action: "open", connections: Object.values(connections), bePolite: false } }); // The new peer doesn't need to be polite.
             // Create new peer
-            const newPeer = { socketId: socket.id, peerId, type, publicKey, age, x, y, sex, searching };
+            const newPeer = { socketId: socket.id, peerId, type, publicKey, age, x, y, sex, searching, latitude, longitude };
             // Updates connections object
             connections[peerId] = newPeer;
             // Let all other peers know about new peer
